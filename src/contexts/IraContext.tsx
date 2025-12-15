@@ -1,81 +1,159 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Feeling = 'calm' | 'tired' | 'stressed' | 'heavy' | 'confused' | null;
-export type State = 'struggling' | 'managing' | 'growing' | null;
+// Questionnaire types
+export type EmotionalState = 'calm' | 'stressed' | 'anxious' | 'low-energy' | 'overthinking' | 'motivated' | 'heavy';
+export type StressSource = 'work' | 'relationships' | 'health' | 'sleep' | 'food' | 'screen-time' | 'loneliness' | 'future';
+export type EnergyLevel = 'drained' | 'balanced' | 'energetic';
+export type LifestyleHabit = 'exercise' | 'healthy-eating' | 'irregular-meals' | 'late-nights' | 'music' | 'creative' | 'meditation';
+export type HelpfulActivity = 'music' | 'movement' | 'silence' | 'writing' | 'talking' | 'nature' | 'learning';
+export type GrowthStage = 'struggling' | 'managing' | 'growing';
 
-interface EmotionalEntry {
-  feeling: Feeling;
-  state: State;
+export interface QuestionnaireAnswers {
+  emotionalStates: EmotionalState[];
+  stressSources: StressSource[];
+  energyLevel: EnergyLevel | null;
+  lifestyleHabits: LifestyleHabit[];
+  helpfulActivities: HelpfulActivity[];
+  growthStage: GrowthStage | null;
+}
+
+export interface Progress {
+  reflect: number;
+  breathe: number;
+  recommendations: number;
+  chat: number;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  earned: boolean;
+  earnedAt?: number;
+}
+
+export interface Milestone {
+  id: string;
+  text: string;
   timestamp: number;
 }
 
-interface Reflection {
+export interface Reflection {
   id: string;
   content: string;
+  gratitudes: string[];
   timestamp: number;
 }
 
 interface IraState {
-  feeling: Feeling;
-  state: State;
   hasCompletedOnboarding: boolean;
   showOnboarding: boolean;
   onboardingStep: number;
-  emotionalHistory: EmotionalEntry[];
+  questionnaire: QuestionnaireAnswers;
+  progress: Progress;
+  badges: Badge[];
+  milestones: Milestone[];
   reflections: Reflection[];
+  breatheSessions: number;
+  chatMessages: number;
 }
 
 interface IraContextType extends IraState {
-  setFeeling: (feeling: Feeling) => void;
-  setState: (state: State) => void;
   completeOnboarding: () => void;
   startOnboarding: () => void;
   nextOnboardingStep: () => void;
-  addReflection: (content: string) => void;
+  prevOnboardingStep: () => void;
+  updateQuestionnaire: <K extends keyof QuestionnaireAnswers>(key: K, value: QuestionnaireAnswers[K]) => void;
+  addReflection: (content: string, gratitudes: string[]) => void;
+  completeBreatheSession: () => void;
+  addChatMessage: () => void;
+  exploreRecommendation: () => void;
   getGreeting: () => string;
   getChatOpening: () => string;
   getAccentClass: () => string;
+  getTotalProgress: () => number;
+  resetOnboarding: () => void;
 }
 
 const IraContext = createContext<IraContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'ira_state';
+const STORAGE_KEY = 'ira_state_v2';
+
+const initialBadges: Badge[] = [
+  { id: 'awareness', name: 'Awareness', description: 'Started understanding yourself', earned: false },
+  { id: 'consistency', name: 'Consistency', description: 'Returned to care for yourself', earned: false },
+  { id: 'calm', name: 'Calm', description: 'Found moments of peace', earned: false },
+  { id: 'growth', name: 'Growth', description: 'Moving forward with intention', earned: false },
+];
+
+const defaultState: IraState = {
+  hasCompletedOnboarding: false,
+  showOnboarding: false,
+  onboardingStep: 1,
+  questionnaire: {
+    emotionalStates: [],
+    stressSources: [],
+    energyLevel: null,
+    lifestyleHabits: [],
+    helpfulActivities: [],
+    growthStage: null,
+  },
+  progress: {
+    reflect: 0,
+    breathe: 0,
+    recommendations: 0,
+    chat: 0,
+  },
+  badges: initialBadges,
+  milestones: [],
+  reflections: [],
+  breatheSessions: 0,
+  chatMessages: 0,
+};
 
 export function IraProvider({ children }: { children: ReactNode }) {
   const [iraState, setIraState] = useState<IraState>(() => {
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        try {
+          return { ...defaultState, ...JSON.parse(saved) };
+        } catch {
+          return defaultState;
+        }
       }
     }
-    return {
-      feeling: null,
-      state: null,
-      hasCompletedOnboarding: false,
-      showOnboarding: false,
-      onboardingStep: 1,
-      emotionalHistory: [],
-      reflections: [],
-    };
+    return defaultState;
   });
 
   useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(iraState));
   }, [iraState]);
 
-  const setFeeling = (feeling: Feeling) => {
-    setIraState(prev => ({ ...prev, feeling }));
+  const addMilestone = (text: string) => {
+    const milestone: Milestone = {
+      id: Date.now().toString(),
+      text,
+      timestamp: Date.now(),
+    };
+    setIraState(prev => ({
+      ...prev,
+      milestones: [...prev.milestones.slice(-9), milestone],
+    }));
   };
 
-  const setState = (state: State) => {
+  const checkAndAwardBadge = (badgeId: string) => {
     setIraState(prev => {
-      const newHistory = prev.feeling ? [
-        ...prev.emotionalHistory,
-        { feeling: prev.feeling, state, timestamp: Date.now() }
-      ].slice(-10) : prev.emotionalHistory;
-      
-      return { ...prev, state, emotionalHistory: newHistory };
+      const badge = prev.badges.find(b => b.id === badgeId);
+      if (badge && !badge.earned) {
+        return {
+          ...prev,
+          badges: prev.badges.map(b =>
+            b.id === badgeId ? { ...b, earned: true, earnedAt: Date.now() } : b
+          ),
+        };
+      }
+      return prev;
     });
   };
 
@@ -87,100 +165,151 @@ export function IraProvider({ children }: { children: ReactNode }) {
     setIraState(prev => ({ ...prev, onboardingStep: prev.onboardingStep + 1 }));
   };
 
+  const prevOnboardingStep = () => {
+    setIraState(prev => ({ ...prev, onboardingStep: Math.max(1, prev.onboardingStep - 1) }));
+  };
+
   const completeOnboarding = () => {
-    setIraState(prev => ({ 
-      ...prev, 
-      hasCompletedOnboarding: true, 
+    setIraState(prev => ({
+      ...prev,
+      hasCompletedOnboarding: true,
       showOnboarding: false,
-      onboardingStep: 1
+      onboardingStep: 1,
+    }));
+    addMilestone('You showed up today.');
+    checkAndAwardBadge('awareness');
+  };
+
+  const updateQuestionnaire = <K extends keyof QuestionnaireAnswers>(
+    key: K,
+    value: QuestionnaireAnswers[K]
+  ) => {
+    setIraState(prev => ({
+      ...prev,
+      questionnaire: { ...prev.questionnaire, [key]: value },
     }));
   };
 
-  const addReflection = (content: string) => {
+  const addReflection = (content: string, gratitudes: string[]) => {
     const newReflection: Reflection = {
       id: Date.now().toString(),
       content,
+      gratitudes,
       timestamp: Date.now(),
     };
     setIraState(prev => ({
       ...prev,
-      reflections: [...prev.reflections, newReflection].slice(-20)
+      reflections: [...prev.reflections.slice(-19), newReflection],
+      progress: { ...prev.progress, reflect: Math.min(100, prev.progress.reflect + 25) },
+    }));
+    addMilestone('You took time to reflect.');
+    if (iraState.reflections.length >= 2) {
+      checkAndAwardBadge('consistency');
+    }
+  };
+
+  const completeBreatheSession = () => {
+    setIraState(prev => ({
+      ...prev,
+      breatheSessions: prev.breatheSessions + 1,
+      progress: { ...prev.progress, breathe: Math.min(100, prev.progress.breathe + 25) },
+    }));
+    addMilestone('You cared for your body.');
+    checkAndAwardBadge('calm');
+  };
+
+  const addChatMessage = () => {
+    setIraState(prev => ({
+      ...prev,
+      chatMessages: prev.chatMessages + 1,
+      progress: { ...prev.progress, chat: Math.min(100, prev.progress.chat + 10) },
+    }));
+  };
+
+  const exploreRecommendation = () => {
+    setIraState(prev => ({
+      ...prev,
+      progress: { ...prev.progress, recommendations: Math.min(100, prev.progress.recommendations + 15) },
     }));
   };
 
   const getGreeting = (): string => {
-    const { feeling, state } = iraState;
-    
-    if (!feeling) return "A calm space to understand yourself.";
+    const { questionnaire } = iraState;
+    const { emotionalStates, growthStage, energyLevel } = questionnaire;
 
-    const greetings: Record<string, Record<string, string>> = {
-      heavy: {
-        struggling: "Let's take this very slowly today.",
-        managing: "One moment at a time.",
-        growing: "You're doing something meaningful.",
-      },
-      stressed: {
-        struggling: "Let's find some quiet together.",
-        managing: "A small pause can help.",
-        growing: "Making space for yourself matters.",
-      },
-      tired: {
-        struggling: "Rest is okay. Start when you're ready.",
-        managing: "Go gently today.",
-        growing: "Taking care of yourself.",
-      },
-      confused: {
-        struggling: "No need to figure it all out now.",
-        managing: "Clarity comes with time.",
-        growing: "Exploring is part of understanding.",
-      },
-      calm: {
-        struggling: "You found some stillness.",
-        managing: "A good place to be.",
-        growing: "Building on something solid.",
-      },
-    };
+    if (!growthStage) return "A calm space to understand yourself.";
 
-    return greetings[feeling]?.[state || 'managing'] || "Welcome back.";
+    if (emotionalStates.includes('heavy') || growthStage === 'struggling') {
+      return "Let's take this very slowly today.";
+    }
+    if (emotionalStates.includes('stressed') || emotionalStates.includes('anxious')) {
+      return "A moment of quiet for you.";
+    }
+    if (energyLevel === 'drained' || emotionalStates.includes('low-energy')) {
+      return "Go gently. No rush.";
+    }
+    if (growthStage === 'growing' || emotionalStates.includes('motivated')) {
+      return "Building on something good.";
+    }
+    return "Welcome back.";
   };
 
   const getChatOpening = (): string => {
-    const { feeling, state } = iraState;
+    const { questionnaire } = iraState;
+    const { growthStage, emotionalStates } = questionnaire;
 
-    if (state === 'struggling' || feeling === 'heavy') {
+    if (growthStage === 'struggling' || emotionalStates.includes('heavy')) {
       return "Do you want to talk, or just sit here for a bit?";
     }
-    if (feeling === 'calm' || state === 'growing') {
-      return "What's on your mind today?";
+    if (emotionalStates.includes('calm') || growthStage === 'growing') {
+      return "What's been on your mind lately?";
+    }
+    if (emotionalStates.includes('anxious') || emotionalStates.includes('overthinking')) {
+      return "Want to put some thoughts into words?";
     }
     return "How can I help right now?";
   };
 
   const getAccentClass = (): string => {
-    const { feeling, state } = iraState;
-    
-    if (feeling === 'heavy' || state === 'struggling') {
+    const { questionnaire } = iraState;
+    const { growthStage, emotionalStates } = questionnaire;
+
+    if (emotionalStates.includes('heavy') || growthStage === 'struggling') {
       return 'bg-ira-lavender-soft';
     }
-    if (state === 'growing' || feeling === 'calm') {
+    if (growthStage === 'growing' || emotionalStates.includes('calm')) {
       return 'bg-ira-sage-soft';
     }
-    return 'bg-ira-blue-soft';
+    return 'bg-ira-mist-soft';
+  };
+
+  const getTotalProgress = (): number => {
+    const { progress } = iraState;
+    return Math.round((progress.reflect + progress.breathe + progress.recommendations + progress.chat) / 4);
+  };
+
+  const resetOnboarding = () => {
+    setIraState(defaultState);
   };
 
   return (
     <IraContext.Provider
       value={{
         ...iraState,
-        setFeeling,
-        setState,
         completeOnboarding,
         startOnboarding,
         nextOnboardingStep,
+        prevOnboardingStep,
+        updateQuestionnaire,
         addReflection,
+        completeBreatheSession,
+        addChatMessage,
+        exploreRecommendation,
         getGreeting,
         getChatOpening,
         getAccentClass,
+        getTotalProgress,
+        resetOnboarding,
       }}
     >
       {children}
