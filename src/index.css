@@ -2,117 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Calm, cool palette */
-    --background: 210 20% 98%;
-    --foreground: 220 15% 20%;
+    /* Calm premium palette */
+    --background: 40 25% 97%;
+    --foreground: 220 20% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
+    --card-foreground: 220 20% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 20%;
+    --popover-foreground: 220 20% 18%;
 
-    /* Soft blue-gray primary */
-    --primary: 210 30% 55%;
+    /* Mist blue primary */
+    --primary: 200 35% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Very soft sage */
-    --secondary: 150 20% 92%;
-    --secondary-foreground: 150 25% 35%;
+    /* Sage green secondary */
+    --secondary: 145 25% 88%;
+    --secondary-foreground: 145 30% 30%;
 
-    /* Muted lavender */
-    --accent: 260 20% 92%;
-    --accent-foreground: 260 20% 40%;
+    /* Muted lavender accent */
+    --accent: 270 25% 92%;
+    --accent-foreground: 270 25% 35%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 40 15% 94%;
+    --muted-foreground: 220 12% 50%;
 
     --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 90%;
-    --input: 210 15% 92%;
-    --ring: 210 30% 55%;
+    --border: 40 15% 88%;
+    --input: 40 15% 92%;
+    --ring: 200 35% 55%;
 
     --radius: 1rem;
 
-    /* Ira specific */
-    --ira-blue: 210 35% 60%;
-    --ira-blue-soft: 210 30% 94%;
-    --ira-sage: 150 25% 55%;
-    --ira-sage-soft: 150 25% 93%;
-    --ira-lavender: 260 25% 70%;
-    --ira-lavender-soft: 260 20% 94%;
-    --ira-warm: 30 30% 94%;
+    /* Ira brand colors */
+    --ira-sage: 145 30% 50%;
+    --ira-sage-soft: 145 25% 92%;
+    --ira-mist: 200 35% 60%;
+    --ira-mist-soft: 200 30% 94%;
+    --ira-lavender: 270 30% 70%;
+    --ira-lavender-soft: 270 25% 94%;
+    --ira-warm: 35 40% 95%;
+    --ira-cream: 40 30% 97%;
+
+    /* Progress colors */
+    --progress-reflect: 200 45% 55%;
+    --progress-breathe: 145 35% 50%;
+    --progress-recommend: 270 35% 65%;
+    --progress-chat: 35 50% 55%;
 
     /* Font */
-    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-sans: 'Manrope', system-ui, sans-serif;
 
-    /* Shadows - very subtle */
-    --shadow-sm: 0 1px 2px 0 hsl(220 15% 20% / 0.03);
-    --shadow-md: 0 4px 12px -2px hsl(220 15% 20% / 0.05);
-    --shadow-lg: 0 8px 24px -4px hsl(220 15% 20% / 0.06);
+    /* Shadows */
+    --shadow-sm: 0 1px 3px 0 hsl(220 20% 18% / 0.04);
+    --shadow-md: 0 4px 16px -2px hsl(220 20% 18% / 0.06);
+    --shadow-lg: 0 12px 32px -6px hsl(220 20% 18% / 0.08);
 
     /* Sidebar defaults */
-    --sidebar-background: 210 20% 98%;
-    --sidebar-foreground: 220 15% 20%;
-    --sidebar-primary: 210 30% 55%;
+    --sidebar-background: 40 25% 97%;
+    --sidebar-foreground: 220 20% 18%;
+    --sidebar-primary: 200 35% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 15% 95%;
-    --sidebar-accent-foreground: 220 15% 20%;
-    --sidebar-border: 210 15% 90%;
-    --sidebar-ring: 210 30% 55%;
+    --sidebar-accent: 40 15% 94%;
+    --sidebar-accent-foreground: 220 20% 18%;
+    --sidebar-border: 40 15% 88%;
+    --sidebar-ring: 200 35% 55%;
   }
 
   .dark {
-    --background: 220 20% 10%;
-    --foreground: 210 20% 92%;
+    --background: 220 20% 8%;
+    --foreground: 40 20% 92%;
 
-    --card: 220 18% 14%;
-    --card-foreground: 210 20% 92%;
+    --card: 220 18% 12%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 220 18% 14%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 220 18% 12%;
+    --popover-foreground: 40 20% 92%;
 
-    --primary: 210 40% 65%;
-    --primary-foreground: 220 20% 10%;
+    --primary: 200 45% 60%;
+    --primary-foreground: 220 20% 8%;
 
-    --secondary: 150 15% 18%;
-    --secondary-foreground: 150 20% 75%;
+    --secondary: 145 20% 18%;
+    --secondary-foreground: 145 25% 75%;
 
-    --accent: 260 15% 20%;
-    --accent-foreground: 260 20% 80%;
+    --accent: 270 20% 20%;
+    --accent-foreground: 270 25% 80%;
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 210 15% 60%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 40 15% 60%;
 
     --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 210 40% 65%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 200 45% 60%;
 
-    --ira-blue: 210 40% 65%;
-    --ira-blue-soft: 210 25% 18%;
-    --ira-sage: 150 25% 50%;
-    --ira-sage-soft: 150 20% 16%;
-    --ira-lavender: 260 25% 60%;
-    --ira-lavender-soft: 260 15% 18%;
-    --ira-warm: 30 20% 16%;
+    --ira-sage: 145 30% 45%;
+    --ira-sage-soft: 145 20% 16%;
+    --ira-mist: 200 40% 55%;
+    --ira-mist-soft: 200 25% 16%;
+    --ira-lavender: 270 30% 55%;
+    --ira-lavender-soft: 270 20% 18%;
+    --ira-warm: 35 25% 16%;
+    --ira-cream: 40 20% 12%;
 
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 210 20% 92%;
-    --sidebar-primary: 210 40% 65%;
-    --sidebar-primary-foreground: 220 20% 10%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 210 40% 65%;
+    --progress-reflect: 200 50% 60%;
+    --progress-breathe: 145 40% 55%;
+    --progress-recommend: 270 40% 60%;
+    --progress-chat: 35 55% 60%;
+
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 200 45% 60%;
+    --sidebar-primary-foreground: 220 20% 8%;
+    --sidebar-accent: 220 15% 16%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 200 45% 60%;
   }
 }
 
@@ -128,31 +141,36 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
+    line-height: 1.7;
   }
 }
 
 @layer components {
   .ira-container {
-    @apply max-w-4xl mx-auto px-5 md:px-6;
+    @apply max-w-5xl mx-auto px-5 md:px-8;
   }
 
   .ira-card {
-    @apply bg-card rounded-2xl p-6 transition-all duration-200;
+    @apply bg-card rounded-2xl p-6 transition-all duration-300;
     box-shadow: var(--shadow-md);
   }
 
   .ira-card:hover {
     box-shadow: var(--shadow-lg);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+  }
+
+  .ira-card-flat {
+    @apply bg-card rounded-2xl p-6 border border-border;
   }
 
   .ira-btn {
     @apply inline-flex items-center justify-center px-6 py-3 rounded-xl 
-           text-sm font-medium transition-all duration-200;
+           text-sm font-medium transition-all duration-300;
   }
 
   .ira-btn-primary {
-    @apply ira-btn bg-primary text-primary-foreground hover:opacity-90;
+    @apply ira-btn bg-primary text-primary-foreground hover:opacity-90 hover:shadow-md;
   }
 
   .ira-btn-secondary {
@@ -166,22 +184,36 @@
   .ira-input {
     @apply w-full px-4 py-3 rounded-xl bg-muted border-0 text-foreground 
            placeholder:text-muted-foreground focus:outline-none focus:ring-2 
-           focus:ring-primary/20 transition-all duration-200;
+           focus:ring-primary/20 transition-all duration-300;
+  }
+
+  .ira-pill {
+    @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+           bg-muted text-muted-foreground transition-all duration-200
+           hover:bg-secondary cursor-pointer select-none;
+  }
+
+  .ira-pill-active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .ira-progress-ring {
+    @apply relative inline-flex items-center justify-center;
   }
 }
 
 @layer utilities {
-  .bg-ira-blue {
-    background-color: hsl(var(--ira-blue));
-  }
-  .bg-ira-blue-soft {
-    background-color: hsl(var(--ira-blue-soft));
-  }
   .bg-ira-sage {
     background-color: hsl(var(--ira-sage));
   }
   .bg-ira-sage-soft {
     background-color: hsl(var(--ira-sage-soft));
+  }
+  .bg-ira-mist {
+    background-color: hsl(var(--ira-mist));
+  }
+  .bg-ira-mist-soft {
+    background-color: hsl(var(--ira-mist-soft));
   }
   .bg-ira-lavender {
     background-color: hsl(var(--ira-lavender));
@@ -192,14 +224,30 @@
   .bg-ira-warm {
     background-color: hsl(var(--ira-warm));
   }
-  .text-ira-blue {
-    color: hsl(var(--ira-blue));
+  .bg-ira-cream {
+    background-color: hsl(var(--ira-cream));
   }
   .text-ira-sage {
     color: hsl(var(--ira-sage));
   }
+  .text-ira-mist {
+    color: hsl(var(--ira-mist));
+  }
   .text-ira-lavender {
     color: hsl(var(--ira-lavender));
+  }
+
+  .stroke-progress-reflect {
+    stroke: hsl(var(--progress-reflect));
+  }
+  .stroke-progress-breathe {
+    stroke: hsl(var(--progress-breathe));
+  }
+  .stroke-progress-recommend {
+    stroke: hsl(var(--progress-recommend));
+  }
+  .stroke-progress-chat {
+    stroke: hsl(var(--progress-chat));
   }
 
   .shadow-soft {
